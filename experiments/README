@@ -1,0 +1,335 @@
+
+#############################################
+Generic for user trials:  in experiments directory
+#############################################
+
+min_edit_distance: 
+  * To compute the character error rate during user trials.
+  * Not used directly
+../pylab_settings:
+  * Pylab display settings for pylab plots  
+grnd_truth_actions.py:
+  * computeAll: 
+    - For a certain threshold, see which words can not be identified by default.  
+    - Run fox/for example
+plot_utils.py:
+  * File shared by both multi-channel and audio experiment to make box-whisker plots.
+  * Also other useful plot functions
+phrase_utils:
+  * Used in experiments and user trials to process predefined phrases.
+
+#############################################
+Simulations
+#############################################
+
+draw_binary_seq:
+   * i_save_figures=True: Save pdf file in results directory.
+   * Draw the letter and word binary codes for paper (also shows how to differentiate between different words). 
+                   
+click_distr_plots.py: 
+   * Click_timing model plots
+   * 1D & 2D click-times, and Voronoi plots of simple noise model
+   * 1D & 2D click-times, and Voronoi plots of complicated noise model 
+     - Can add samples to 1D plot (currently commented out): plot_samples=True
+     - In function dispComplicatedClickDistrPlots: First run with save_scores=True, and then save_scores=False
+   * 2D plot of letter configuration (letter means) 
+
+ticker_simulation_ex: 
+        * calls ticker_simulation: some examples before compare_plot to see if simulation code works.
+
+       (i) sentenceExample
+       ------------------------------------------------------------
+	* save_image = True (and then set to False for faster computation)
+           *  ./click_distr_plots/simul_scores.npy and ./click_distr_plots/simul_ids.npy
+ 	* no picture save - this is just a toy example.
+        * generate 2D image with samples of sentence for given noise settings
+       
+       (ii) sampleExample:
+         * Typical example corresponding to relatively fast setting.    
+         * Draw samples for the noise settings conditioned on C, N, do density estimation. This is to visualise different 
+           noise settings, diagnostic purposes. Plot samples 2D and 1D. (Should be similar to parametric versions in paper).
+           
+       (iii) updateExample:
+         * Example to test the updating of the click distribution parameters
+         * Generate samples and compare against ground truth parameters.
+         * Compare against ML solution with no prior (2 real clicks for gaussian)
+            - gradually add prior, and then increase fr and fp values. 
+            
+        (iv) testTruePositiveSamples:
+         * Test if the delay and std of the true samples are correct 
+         * Example to see how the sampling works
+         * Letter locations in ticker should be the actual audio locations
+         * The gaussmeans can then be returned either with or without the additional user reaction delay
+         * With only true positives the number of rejection samples can be set a bit lower 
+         * Due ML estimate on generated samples to see if the delay and std are in the right ball park
+ 
+grid_simulation_ex:
+    * example() Tikz figure of Markov chain for simple example, and test for probabilities in table~II.
+        (i) simpleExample: 
+                * Generated tikz graph: results/simulations/grid1.tikz
+                * Generate example state sequence (table in paper) and make sure grnd_truth prob 
+                  is equal to that computed in Ticker. Also, display all states, probs etc. to see
+                  how the Grid simulation computes everything.
+     
+        (ii) wordExample: 
+                - plotting pdf for number of scans for word "word example". 
+                  The noise setting is quite high for a normal user, but not necessarily for disabled user.
+                - standing_. Save picture pdf as results/simulations/scan_probs.pdf
+                - can save probs to tmp.cPickle for fast computation
+          
+        (iii) sentenceExample:
+                - Show the average stats of a whole sentence
+                - Expectations are computed over the words and finally the expectations are computed by averaging over all the words.
+                - Used as example for simulations.py
+
+grid_to_ticker_simulation_ex:
+		* Same as grid_simulation_ex, but delay at end of group scan not after every scan-
+                * Use distribution as part of interface
+                * first step towards Ticker 
+
+simulations:
+      * The actual simulations using grid_simulation and ticker_simulation
+      * Some case studies and noise plots
+      * Experiments [2,5,6] combines 1-6 into three plots (see runApps).
+      * Run compute first and the plot.
+
+simulations_compare:
+      * Compare the fast and slow scan methods
+      * fast scan method supports only zero false positve rate and sigma=eps. 
+
+             
+Final normalised results Ticker:
+cpc=[[2.00,1.97,2.00]]
+wpm=[[2.15,2.18,2.23]]
+error rate=[[0.00,0.00,0.00]]
+Saving ticker results to  ./results/simulations/ticker/prob_01.cPickle
+ 
+ 
+grid_simulation :
+   * Core functions to simulate Grid2 performance
+   * Run to get the minimum number of scans for an input word, and the average number of scans per letter 
+     in the input word (assuming uniform priors).
+   * See simulation.py for actual simulation comparison between Grid2 and Ticker 
+   * See grid_simulation_ex.py (compute) for examples how to use Grid simulation.
+      
+compare_plot (trial1, 2, 3):  
+   * Run simulations to compare the Grid2 and Ticker, draw pictures (Compute)
+   * Plot: Make the pictures from saved results (from compute).
+   * Approximate estimates, no noise: compareLetters.     
+   * trial1: Only for Grid2, example of how cumalative distr associated with sentence (how long it takes)
+
+               
+---------------------------------------------
+Other files
+---------------------------------------------
+ticker_simulation:
+   * Core functions to simulate ticker performance
+   * See simulation.py for actual simulation comparison between Grid2 and Ticker 
+   * See ticker_simulation_ex.py (compute) for examples how to use Ticker sampling to simulate Ticker performance.
+
+tikz_graphs:
+   * Latex file to write tikz code from python to make state diagrams for the example in grid_noise_words.
+
+ticker_sampling:                
+   * Code used in simulation to sample from the click distribution
+
+ticker_click_noise_numerical:  
+  * Attempt to solve the integrals numerically.
+  * Could not solve with Poisson Process in there. A whole bunch of helper functions in there that might be of use later on.
+  * Show letter decision boundaries for GMM (associated with letter repetitioons) - over simplified model
+  * Also the 2D click times of simple GMM model 
+  * Used by click_distr_plots
+  * deprecated/ticker_scores.pyx:             
+    - Some cython code (can be used later as an example), part of numerical integration in ticker_click_noise_numerical. 
+  * deprecated/setup.py                        
+    - build ticker_score.c from ticker_scores.pyx
+
+normalise_tests.py:             
+   * A set of examples to test the normalisation constants of various settings
+   * Mainly to test the click distribution for various settings
+
+click_distribution_display.py:  
+   * Plot the prior click parameters, to visualise the broad priors, look below at main.
+ 
+                 
+#############################################################
+User trials:
+#############################################################
+
+=============================================================
+Multi-channel experiment & case study
+=============================================================
+Main files to run, to generate paper results:
+
+save_results.py:
+  * Save the audio experiment results (used in paper)
+    - results/student_audio_results.cPickle and results/case_study_audio_results.cPickle
+    - set i_is_students=False for case study data and true for student data during initialisation. (do both)
+  * Need numpy > 1.6.0 (look in lib directory) for percentiles
+  * The user trial data is loaded from 
+     - Case study: ticker_dev/user_trials/multi_channel_experiment/case_study/results-0.0.0.0/
+     - Students (pilots and other data): ticker_dev/user_trials/multi_channel_experiment/students/
+  * Set display to False:
+     - Nothing will be displayed unless the number of click iterations is not equal to the number of total iterations
+     - This shows that niterations were indeed recorded correctly.
+
+load_results.py
+  * Load the previous results and make plots (used in paper)
+    - Make boxplot results to look at the data range of the users:
+ 	   -- results/: wpm.pdf, error_rate.pdf,  clicks.pdf (and eps) (plots from student audio experiment)
+  * Can also view all other results computed as average values (not used in paper.
+    - Useful to see how to recall the data recorded during the user trials.  
+    - results.dispAvgUserStats(users, channels, i_display=True) 
+  * userStats function arguments: 
+        * i_display=True: 
+          - Display some of the user stats
+        * i_display=False: 
+          - Will display it if the total number of iterations is not equal to the number of iterations where clicks were received. 
+            (this is only for diagnostic purposes) 
+        * i_display_min_iter=True: 
+          - For diagnostic purposes.
+          - Display the % of time the number of alphabet-sequence repetitions where clicks were received is less or equal to                    
+            the length of the grnd_truth word (if > 50 it means that the median of the text entry rate will be faster or equal to 
+            the theoretical estimated wpm). 
+            
+------------------------------------------------------------
+Other files and directories:
+------------------------------------------------------------
+
+model_comparison.py
+  * Compare the new ticker click distribution against the old.
+  * See if results are similar (just mention in paper).
+  * Should work as is (display error rates std out)
+  * Can load another click distr: self.load_click_distr = True  and set self.click_distr_dir.
+  * Not used in paper, but is useful to get an idea if results are similar, and to regenerate 
+    the old results by using only the user's click data.
+ 
+plot_click_distr.py:
+  * For a user - gather all the clicks and plot for a specific channel setting.
+  * Look in ticker_dev/user_trials/user_trial_pictures (.pdf files).
+  * Throw all the data in as batch and look at final kernel density estimates (it's safe to assume that false pos rate is low).
+  * Run kernel_density for example cases of how non-parameteric distribution is learned.
+   
+user_trial_setup:
+  * The setup (Click distr values, sound settings etc.) to use in order to compare against old experiment (user_trials)
+  * Used by model_comparison.py
+  
+diagnostic:
+click_distr_old&ticker_old: 
+  * Exact click distr and settings used in old experiment 
+  * self.disp_some_diagnostic=True in model_comparison.py: Generate results from old experiment.
+  * self.disp_all_diagnostic=True in model_comparsin.py: Some additional diagnostics.
+
+ experiment_info/
+  * Experimental setup info, emails sent to participants, consent forms etc.
+
+    
+=============================================================
+Audio experiment
+=============================================================
+-----------
+Data set
+-----------
+ticker_dev/simulations/corpus:
+* Downloaded from Per Ola's website
+   - Phrases are memorable and have shown to be closer to what impaired users would say than other dataset.
+* Took the training set: sent_train_aac.txt
+* Did some basic cleanup: clean_phrases.py
+   - Replaced upper case with lower case.
+   - Let all sentences end with fullstop, also questions and exclamations.
+   - Remove phrases that contain words not in dictionary
+   - Renamed to phrases_00.txt and old McKenzie phrases to phrases_01.txt
+* For each user:
+   - Choose a set of (30) phrases randomly before a user starts
+   - Save file as phrases.txt
+   - Removed phrases that did not make sense, e.g., gimme a min, yoe, other names, or fixed severe spelling and grammar mistakes. 
+   - Replaced apostrophe with full word, where it still makes sense, e.g., you're with youre, otherwise removing phrase
+   - Used sentences with no commas, no apostrophe (after replacing a few). 
+   - Replace some names with his/her, where it made sense, otherwise removed phrases with names.
+
+----------------------------------------------- 
+Main files to run, to generate paper results:
+-----------------------------------------------
+-----------------------------------------------------------
+Ticker
+-----------------------------------------------------------
+* ticker_user_trial.py > tmp.txt: 
+  - Used to record data set from a user trial, inheriting from ticker.py.
+  - Copy tmp.txt to the final directory as "log.txt"
+  - Before running it, you'll need to create a directory for trial
+    results to be saved off:
+
+    cd some_path/ticker/experiments/audio_user_trials/ticker_user_trial.py
+    mkdir -p ../../../user_trials/audio_experiment/ticker
+
+* save_results_ticker.py:
+  - Save the recorded data in the correct format to use in plots.
+
+-----------------------------------------------------------
+Grid
+-----------------------------------------------------------
+* grid.py
+ - Custom-made Grid2 that is optimised for audio usage.
+* grid_user_trial.py:
+ - Used to record data set inheriting from grid.py.
+* save_results_grid.py:
+ - Save recorded data in the correct format for later display (using load).
+* grid_config.py
+  - Run separetely to show scan times (how long the letter will be displayed for).
+  - Afterwards: type word and display the minimum time it will take to write it.
+	* config/ (own voice recordings and alphabet setup files).
+  		- voice_recordings/shorten_sounds.sh: 
+			- Make sounds shorter without changing pitch (via sox)
+                        - display final sounds lengths
+                - voice_recordings/add_tick_to_sounds.sh:
+                        - Superimpose tick sound at the beginning of each soud file (automatically)
+  - The alphabet configuration HAS to correspond to that of the directory structure in grid_config directory. 
+      
+----------------------------------------------------------
+Plots
+----------------------------------------------------------
+load_results.py:
+ * Run after save_results_ticker and save_results_grid
+ * Make all plots associated with audio user trials.
+ 
+----------------------------------------------------------
+Files
+----------------------------------------------------------
+* phrases_00.txt: Selected and cleanup phrases from Per Ola
+* phrases_01.txt: MacKenzie phrases
+* phrases.txt: Phrases use in a specific experiment
+* clean_phrases.py: Used to clean Per Ola's phrases and save as phrases_00.txt
+* random_phrase_select.py: Select phrases randomly for a user to write
+* experiment_info: 
+   - Directory
+   - experimental setup for Ticker and Grid (see info.pdf)
+   - crib sheets (to be looked at during some sessions, e.g., alphabet layout, rules and phrases)
+* results/graphs:
+   - Directory with pickle files with results, saved by save_results_ticker.py and save_results_grid.py (needed by load_results).
+   - Audio-experiment plots generated by load_results.py
+* results/patrick_user...
+   - Name of user and number used during all times
+   - results_summary 
+	- hand notes made during experiment to comment on how experiment went
+        - some results to verify when running save_results_.. with display flag on (for selected sessions)
+   - results_disp_grid.odt (and ticker)
+        - Copy and paste std out of all sessions to this file to compare against results_summary and 
+          to spot possible bugs.
+* /ticker_dev/user_trials/audio_experiment
+  - location of all the results saved while recording data from real users.
+* synthetic noise:
+  - The same noise parameters are used for both Ticker and Grid (stored here)
+  - Sample from the correct distributions. 
+  - Run separately to test the sampling by itself.
+* grid_layout.ui:
+  - designer-qt4 grid_layout.ui
+  - Generate grid_layout.py: pyuic4 grid_layout.ui -o grid_layout.py
+* grid_config  
+  - directory containing recorded voices and text files specifying the alphabet configuration
+
+
+======
+NOTES:
+======
+1) Pas std van click distr aan - maak scan length langer, ie, verminder overlap. Kan ook alfabet meer en vinniger lees - werk uit wat is die breaking point.  
+ 

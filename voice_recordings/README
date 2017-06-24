@@ -1,0 +1,85 @@
+
+-------------
+Code:
+------------
+record_alphabet/
+
+display_alphabet_sounds.py
+* Amplitude plot of sound files for a specific overlap.
+
+build_alphabet_files.py:
+* automatically cut out sounds recorded at a specific period (e.g., using metronome.py).
+* Remember to adjust file length variable, necessary to compute click times (see class AlphabetTimes)
+
+print_file_lengths.py
+* If the alphabet configuration changes, the timings at the boundaries (beginning and ends) should be adapt to maintain the rythm 
+(see class AlphabetTimes). The solution is currently hand-crafted only for 5 channels (the recommended option).
+ - Run print_file_lengths (with display=True in AlphabetTimings) to view the letter timings for 5 channels.
+ 
+-------------------------------------------
+Libraries (Linux)
+-------------------------------------------
+* sudo apt-get install python-vorbis
+
+[1] Install pyaudiolab by following [2] 
+[2] http://www.ar.media.kyoto-u.ac.jp/members/david/softwares/audiolab/sphinx/fullapi.html#audio-file-io
+[3] apt-get install python-scikits-openopt
+
+------------------------------------------
+Audio editing
+------------------------------------------
+Mix + Padding:
+
+* sox tick4.ogg -p pad 0.37 0 |sox - w.ogg -m output.ogg
+* a=`ls --all | grep ogg`; for i in $a; do sox -m -v 2 tick.ogg ${i} ${i}; done
+* sox input.wav output.wav speed 2.0
+ 
+-p: Std out 
+pad: begin end (seconds)
+sox -: Read input from stdin after piping
+-m: mix
+
+concatenate:
+sox -m -v 1.5 tick5.ogg w.ogg out.ogg
+
+* Add silence:
+- Audacity: Generate -> silence
+
+* Change tempo without pitch:
+- Audacity: Effects -> change tempo (not speed!)
+
+*Useful tips:
+- http://www.thegeekstuff.com/2009/05/sound-exchange-sox-15-examples-to-manipulate-audio-files/
+- When changing the config alphabet, always check the sound times (print_file_lengths.py in config directory), especially the begin and ends.
+
+* Change tempo not pitch with sox (WSOLA algorithm)
+http://sox.sourceforge.net/sox.html
+ a=`ls --all | grep ogg`; for i in $a; do sox ${i} ${i} tempo 2.38; done 
+
+* See shorten_sounds.sh add_tick_to_sounds.sh for script files:
+/experiments/audio_user_trials/grid_config/voice_recordings
+
+* Decrease volume:
+sox -v -0.5 srcfile.wav test05.wav
+
+--------------------------
+Recording sound files:
+--------------------------
+1. Record .wav files, while running metronome program - set period to 400ms or less.
+2. Run build_alphabet files to analyse a specific voice recording.
+   - Use audacity to manually decide where sound should start (automatic would be nice).
+   - Adjust amplitude (boost) to -1 and 1 (not done yet): after extraction
+   - Remove noise: after rms dropped to < T, make amplitude zero, remove clicks (spike in amplitude).
+   - Adjust timing start, and make period same as metronome period
+   - Extract alphabet sounds - store in directory generated_alphabet sounds
+   - Save as .ogg, or save as .wav and convert later using e.g., oggenc -q 10 *.wav
+
+-------------------------
+Soundfile directories:
+-------------------------
+* alphabet: Current alphabet used (also used during user trial with impaired user).
+* alphabet_long: Alphabet used during audio user trials, testing if the performance differences between the different channels.
+* alphabet_short: Alphabet channels 1 & 2, short recordings, allows for even shorted overlap.
+* audacity: Determine where the sound file (of all sounds concatenated) starts.
+
+

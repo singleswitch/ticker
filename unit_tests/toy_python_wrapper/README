@@ -1,0 +1,4 @@
+python setup.py build
+just so that audio.so is in the same directory as test.py:
+ln -s build/lib...the.platform.name.../audio.so
+python test.py
