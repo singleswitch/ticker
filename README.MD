@@ -1,8 +1,9 @@
 # Ticker
 
-This repository contains research implementations of the Ticker and a standard Grid-based single-switch
-text-entry systems, and copious amounts of code to run user trials, analyse
-results of experiments, and to run information theory/machine learning
+This repository contains research implementations of the Ticker and a
+standard Grid-based single-switch text-entry systems, and copious
+amounts of code to record audio data, run user trials, analyse results
+of experiments, and to run information theory/machine learning
 simulations of the systems under various noise models.
 
 It is relatively rapidly authored research software, so the following
@@ -12,7 +13,7 @@ caveats apply:
     well run into the odd bug or bit of rusted code, particularly with
     older experiments that I haven't been keeping up-to-date.
   * It is not PEP8 Python. So your linter may have a fit of pique at
-    having it's whitespace sensibilities offended.
+    having its whitespace sensibilities offended.
 
 The primary language is Python, with a smattering of C/C++ bindings to
  allow (a bit of) FMOD to be used from within Python.
